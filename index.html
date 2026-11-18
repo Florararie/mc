@@ -4,12 +4,42 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <meta name="e4mc-domain" content="vitally-unmanned.na.e4mc.link">
+<meta name="robots" content="noindex">
 <meta http-equiv="refresh" content="0; url=minecraft://vitally-unmanned.na.e4mc.link">
-<title>Minecraft server</title>
+<title>Minecraft server: vitally-unmanned.na.e4mc.link</title>
+<style>
+  :root { color-scheme: light dark; }
+  body { font: 16px/1.6 system-ui, sans-serif; max-width: 38rem; margin: 3rem auto; padding: 0 1rem; }
+  code { font: 600 1.1em/1.5 ui-monospace, SFMono-Regular, monospace; word-break: break-all; }
+  .address { display: block; padding: .75rem 1rem; border: 1px solid currentColor; border-radius: .5rem; margin: 1rem 0; }
+  .muted { opacity: .75; font-size: .95em; }
+  button { font: inherit; padding: .4rem .9rem; cursor: pointer; }
+</style>
 <script>location.replace("minecraft://vitally-unmanned.na.e4mc.link");</script>
 </head>
 <body>
-<p>This page points at <strong>vitally-unmanned.na.e4mc.link</strong>.</p>
-<p>If nothing opens, add <code>vitally-unmanned.na.e4mc.link</code> as a server in Minecraft.</p>
+<h1>Minecraft server</h1>
+<p>Copy this address into Minecraft:</p>
+<code class="address" id="address">vitally-unmanned.na.e4mc.link</code>
+<button id="copy" type="button">Copy address</button>
+<p>In Minecraft: <strong>Multiplayer &rarr; Direct Connection</strong>, paste the
+address above and press <em>Join Server</em>.</p>
+<p class="muted">Use the address, not this page's URL. Minecraft connects to a
+hostname, so <code>https://</code> and anything after a <code>/</code> cannot
+work. If your browser has a Minecraft handler,
+<a href="minecraft://vitally-unmanned.na.e4mc.link">open it directly</a>.</p>
+<script>
+const address = document.getElementById("address").textContent.trim();
+const copy = document.getElementById("copy");
+copy.addEventListener("click", async () => {
+  try {
+    await navigator.clipboard.writeText(address);
+    copy.textContent = "Copied";
+  } catch (error) {
+    copy.textContent = "Select the address above";
+  }
+  setTimeout(() => { copy.textContent = "Copy address"; }, 2000);
+});
+</script>
 </body>
 </html>
