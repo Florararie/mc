@@ -3,72 +3,190 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<meta name="e4mc-domain" content="vitally-unmanned.na.e4mc.link">
+<meta name="e4mc-domain" content="bloating-booted.na.e4mc.link">
+<meta name="e4mc-status" content="live">
 <meta name="robots" content="noindex">
 <meta http-equiv="refresh" content="60">
-<title>vitally-unmanned.na.e4mc.link · Minecraft server</title>
+<title>bloating-booted.na.e4mc.link · Minecraft server</title>
 <style>
   :root {
     color-scheme: light dark;
-    --bg: #ffffff;
+    --bg: #eef0f3;
+    --card: #ffffff;
     --fg: #14161a;
     --muted: #5b616b;
     --panel: #f5f6f7;
-    --line: #d8dbe0;
+    --line: #dfe3e8;
+    --line-strong: #c6cdd6;
     --focus: #33663f;
+    --ok: #16a34a;
+    --ok-ring: rgba(22, 163, 74, .16);
+    --ok-text: #15803d;
+    --bad: #dc2626;
+    --bad-ring: rgba(220, 38, 38, .16);
+    --bad-text: #b91c1c;
+    --shadow: 0 1px 2px rgba(16, 24, 40, .05), 0 18px 36px -14px rgba(16, 24, 40, .22);
   }
   @media (prefers-color-scheme: dark) {
     :root {
-      --bg: #101215;
+      --bg: #0a0c0e;
+      --card: #14171b;
       --fg: #eceef1;
       --muted: #9aa1ab;
-      --panel: #181b1f;
-      --line: #2b3036;
+      --panel: #1b1f24;
+      --line: #2a2f36;
+      --line-strong: #3c434d;
       --focus: #8fd39b;
+      --ok: #4ade80;
+      --ok-ring: rgba(74, 222, 128, .18);
+      --ok-text: #86efac;
+      --bad: #f87171;
+      --bad-ring: rgba(248, 113, 113, .18);
+      --bad-text: #fca5a5;
+      --shadow: 0 1px 0 rgba(255, 255, 255, .03) inset, 0 24px 48px -18px rgba(0, 0, 0, .7);
     }
   }
   * { box-sizing: border-box; }
   body {
     margin: 0;
-    padding: 3.5rem 1.25rem 2.5rem;
+    padding: clamp(1.25rem, 4vw, 3rem);
+    min-height: 100vh;
+    min-height: 100dvh;
+    display: flex;
+    flex-direction: column;
     background: var(--bg);
     color: var(--fg);
     font: 16px/1.6 system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
   }
-  main { max-width: 33rem; margin: 0 auto; }
-  h1 { margin: 0 0 .35rem; font-size: 1.35rem; line-height: 1.3; letter-spacing: -.01em; }
-  .lede { margin: 0 0 1.6rem; color: var(--muted); }
-  .address {
-    display: block;
+  main {
     width: 100%;
-    padding: 1rem 1.1rem;
+    max-width: 34rem;
+    margin: auto;
+    padding: clamp(1.5rem, 4.5vw, 2.4rem);
+    background: var(--card);
+    border: 1px solid var(--line);
+    border-radius: 1.125rem;
+    box-shadow: var(--shadow);
+  }
+  h1 { margin: 0 0 .5rem; font-size: 1.35rem; line-height: 1.3; letter-spacing: -.01em; }
+  .status {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: .45rem;
+    margin: 0 0 1.5rem;
+    color: var(--muted);
+    font-size: .9rem;
+  }
+  .status .state { font-weight: 600; }
+  .status[data-state="live"] .state { color: var(--ok-text); }
+  .status[data-state="offline"] .state { color: var(--bad-text); }
+  .status .sep { opacity: .45; }
+  .status time { font-variant-numeric: tabular-nums; }
+  .dot {
+    width: .55rem;
+    height: .55rem;
+    flex: none;
+    border-radius: 50%;
+    background: var(--muted);
+  }
+  .status[data-state="live"] .dot { background: var(--ok); box-shadow: 0 0 0 3px var(--ok-ring); }
+  .status[data-state="offline"] .dot { background: var(--bad); box-shadow: 0 0 0 3px var(--bad-ring); }
+  @media (prefers-reduced-motion: no-preference) {
+    .status[data-state="live"] .dot { animation: pulse 2.4s ease-in-out infinite; }
+    @keyframes pulse {
+      0%, 100% { box-shadow: 0 0 0 3px var(--ok-ring); }
+      50% { box-shadow: 0 0 0 7px rgba(74, 222, 128, 0); }
+    }
+  }
+  .lede { margin: 0 0 1.6rem; color: var(--muted); }
+  .address-bar {
+    position: relative;
+    display: flex;
+    align-items: center;
     background: var(--panel);
     border: 1px solid var(--line);
     border-radius: .625rem;
+    transition: border-color .15s ease, box-shadow .15s ease;
+  }
+  .address-bar:hover,
+  .address-bar:focus-within { border-color: var(--line-strong); }
+  .address-bar[data-state="offline"] { border-style: dashed; }
+  .address {
+    flex: 1;
+    min-width: 0;
+    padding: 1rem 3.15rem 1rem 1.1rem;
     font: 600 1.125rem/1.45 ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
     overflow-wrap: anywhere;
     user-select: all;
   }
-  .actions { margin: .75rem 0 0; }
-  button {
-    min-height: 2.75rem;
-    padding: .55rem 1.15rem;
-    font: inherit;
-    font-weight: 600;
-    color: var(--bg);
-    background: var(--fg);
-    border: 1px solid var(--fg);
-    border-radius: .5rem;
+  .address-bar[data-state="offline"] .address { color: var(--muted); }
+  .copy {
+    position: absolute;
+    top: 50%;
+    right: .55rem;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 2.1rem;
+    height: 2.1rem;
+    padding: 0;
+    transform: translateY(-50%);
+    color: var(--muted);
+    background: transparent;
+    border: 1px solid transparent;
+    border-radius: .45rem;
     cursor: pointer;
+    opacity: 0;
+    transition: opacity .16s ease, background-color .16s ease, border-color .16s ease,
+                color .16s ease, transform .1s ease;
   }
-  button:hover { opacity: .86; }
-  button:active { transform: translateY(1px); }
-  button:focus-visible { outline: 2px solid var(--focus); outline-offset: 2px; }
+  .address-bar:hover .copy,
+  .address-bar:focus-within .copy,
+  .address-bar[data-feedback] .copy { opacity: 1; }
+  .copy:hover { color: var(--fg); background: var(--card); border-color: var(--line-strong); }
+  .copy:active { transform: translateY(-50%) scale(.94); }
+  .copy:focus-visible { opacity: 1; outline: 2px solid var(--focus); outline-offset: 2px; }
+  .copy svg { display: block; width: 1.05rem; height: 1.05rem; }
+  .copy .icon-check { display: none; }
+  .address-bar[data-feedback="copied"] .copy {
+    color: var(--ok-text);
+    background: var(--ok-ring);
+    border-color: transparent;
+  }
+  .address-bar[data-feedback="copied"] .icon-copy { display: none; }
+  .address-bar[data-feedback="copied"] .icon-check { display: block; }
+  .copy-tip {
+    position: absolute;
+    right: .35rem;
+    bottom: calc(100% + .4rem);
+    padding: .3rem .55rem;
+    font-size: .78rem;
+    font-weight: 600;
+    line-height: 1.25;
+    white-space: nowrap;
+    color: var(--card);
+    background: var(--fg);
+    border-radius: .35rem;
+    opacity: 0;
+    transform: translateY(.2rem);
+    pointer-events: none;
+    transition: opacity .16s ease, transform .16s ease;
+  }
+  .address-bar[data-feedback] .copy-tip { opacity: 1; transform: none; }
+  @media (hover: none) {
+    .copy { opacity: .6; }
+  }
   .note { margin: 1.4rem 0 0; color: var(--muted); font-size: .95rem; }
   .note code { font-size: .92em; }
+  .note.offline {
+    margin-top: 1.2rem;
+    padding-left: .85rem;
+    border-left: 2px solid var(--bad);
+  }
   a { color: inherit; text-underline-offset: 2px; }
   footer {
-    margin-top: 2.75rem;
+    margin-top: 2.4rem;
     padding-top: 1.15rem;
     border-top: 1px solid var(--line);
     color: var(--muted);
@@ -76,7 +194,8 @@
   }
   footer p { margin: .2rem 0; }
   @media (max-width: 26rem) {
-    body { padding-top: 2.25rem; }
+    body { padding: 1rem .9rem; }
+    main { padding: 1.35rem 1.2rem; }
     .address { font-size: 1rem; }
   }
 </style>
@@ -84,10 +203,29 @@
 <body>
 <main>
   <h1>Minecraft server</h1>
+  <p class="status" data-state="live">
+    <span class="dot" aria-hidden="true"></span>
+    <span class="state">Live</span>
+    <span class="sep" aria-hidden="true">&middot;</span>
+    <span class="updated">Last changed
+    <time datetime="2026-11-20T09:55:33Z" title="20 Nov 2026, 09:55 UTC" data-relative>20 Nov 2026, 09:55 UTC</time></span>
+  </p>
   <p class="lede">Paste this address into Minecraft to join.</p>
 
-  <code class="address" id="address">vitally-unmanned.na.e4mc.link</code>
-  <p class="actions"><button id="copy" type="button">Copy address</button></p>
+  <div class="address-bar" id="address-bar" data-state="live">
+    <code class="address" id="address">bloating-booted.na.e4mc.link</code>
+    <span class="copy-tip" id="copy-tip" role="status"></span>
+    <button class="copy" id="copy" type="button" aria-label="Copy server address">
+      <svg class="icon-copy" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false">
+        <rect x="9" y="9" width="12" height="12" rx="2"></rect>
+        <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path>
+      </svg>
+      <svg class="icon-check" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false">
+        <path d="M4 12.5l5 5L20 6.5"></path>
+      </svg>
+    </button>
+  </div>
+  
 
   <p class="note"><strong>Multiplayer &rarr; Direct Connection</strong>, paste,
   then <em>Join Server</em>. Use the address, not this page's URL: Minecraft
@@ -105,16 +243,34 @@
   </footer>
 </main>
 <script>
+const bar = document.getElementById("address-bar");
 const address = document.getElementById("address");
-const button = document.getElementById("copy");
-const label = button.textContent.trim();
-button.addEventListener("click", async () => {
+const copy = document.getElementById("copy");
+const tip = document.getElementById("copy-tip");
+let feedbackTimer;
+
+const feedback = (state, message) => {
+  bar.dataset.feedback = state;
+  tip.textContent = message;
+  clearTimeout(feedbackTimer);
+  feedbackTimer = setTimeout(() => {
+    delete bar.dataset.feedback;
+    tip.textContent = "";
+    copy.setAttribute("aria-label", "Copy server address");
+  }, 2000);
+};
+
+const copyAddress = async () => {
   const text = address.textContent.trim();
-  let copied = true;
   try {
-    await navigator.clipboard.writeText(text);
+    if (navigator.clipboard && window.isSecureContext) {
+      await navigator.clipboard.writeText(text);
+      return true;
+    }
   } catch (error) {
-    copied = false;
+    /* fall through to selecting the text */
+  }
+  try {
     const range = document.createRange();
     range.selectNodeContents(address);
     const selection = getSelection();
@@ -122,10 +278,44 @@ button.addEventListener("click", async () => {
       selection.removeAllRanges();
       selection.addRange(range);
     }
+    return document.execCommand("copy");
+  } catch (error) {
+    return false;
   }
-  button.textContent = copied ? "Copied" : "Selected, press Ctrl/Cmd+C";
-  setTimeout(() => { button.textContent = label; }, 2200);
+};
+
+copy.addEventListener("click", async () => {
+  if (await copyAddress()) {
+    feedback("copied", "Copied");
+    copy.setAttribute("aria-label", "Address copied");
+  } else {
+    feedback("manual", "Press Ctrl/Cmd+C");
+    copy.setAttribute("aria-label", "Address selected, press Ctrl/Cmd+C");
+  }
 });
+
+const stamp = document.querySelector("time[data-relative]");
+if (stamp) {
+  const when = new Date(stamp.getAttribute("datetime"));
+  const units = [
+    ["year", 31557600], ["month", 2629800], ["week", 604800],
+    ["day", 86400], ["hour", 3600], ["minute", 60]
+  ];
+  const phrase = () => {
+    const seconds = Math.max(0, (Date.now() - when.getTime()) / 1000);
+    if (!isFinite(seconds) || seconds < 45) return "just now";
+    for (const [unit, size] of units) {
+      if (seconds >= size) {
+        const count = Math.round(seconds / size);
+        return count + " " + unit + (count === 1 ? "" : "s") + " ago";
+      }
+    }
+    return "just now";
+  };
+  const paint = () => { stamp.textContent = phrase(); };
+  paint();
+  setInterval(paint, 30000);
+}
 </script>
 </body>
 </html>
